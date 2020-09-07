@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper  namespace="tao.mapper.EmployeeMapper" >
+    <select id="queryEmployee" resultType="tao.model.Employee" parameterType="tao.model.Employee">
+        select * from employee where username =#{username} and password=#{password}
+    </select>
+    <insert id="addEmployee" parameterType="tao.model.Employee">
+                insert into employee(employeename,username,phone,email,status,departmentid,password,role) values(#{employeename},#{username},#{phone},#{email},#{status},#{departmentid},#{password},#{role})
+    </insert>
+    <select id="queryEmployeeByUsername" resultType="tao.model.Employee" parameterType="string">
+        select * from employee where username =#{username}
+    </select>
+
+    <select id="findApplicants" resultType="tao.model.Employee">
+        select * from employee where status='0'
+    </select>
+
+    <select id="findByEmp" resultType="tao.model.Employee" parameterType="tao.model.Employee">
+        select * from employee 
+        <where>
+            <if test="username!=null">
+                username like concat('%',#{username},'%')
+            </if>
+            <if test="employeename!=null">
+                and employeename like concat('%',#{employeename},'%')
+            </if>
+            <if test="status!=null">
+                and status=#{status}
+            </if>
+        </where>
+    </select>
+
+
+    <update id="updateStatus">
+        update employee set status=#{status} where employeeid=#{employeeid}
+    </update>
+
+    <select id="findEmpsByDepId" resultType="tao.model.Employee">
+        select * from employee where departmentid=#{id}
+    </select>
+</mapper>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation= "http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                            http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+                            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+                            http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+    <context:component-scan base-package="tao">
+        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller" />
+    </context:component-scan>
+
+    <context:property-placeholder location="classpath:db.properties"/>
+
+    <bean class="com.alibaba.druid.pool.DruidDataSource" id="dataSource">
+        <property name="username" value="${db.username}"></property>
+        <property name="password" value="${db.password}"></property>
+        <property name="url" value="${db.url}"></property>
+    </bean>
+
+    <bean class="org.mybatis.spring.SqlSessionFactoryBean" id="sqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"></property>
+        <!--配置mybatis 插件-->
+        <property name="plugins">
+            <array>
+              <bean class="com.github.pagehelper.PageInterceptor">
+                <property name="properties">
+                  <!-- config params as the following -->
+                  <value>
+                    helpDialect=mysql
+                  </value>
+                </property>
+              </bean>
+            </array>
+          </property>
+        <property name="mapperLocations" value="classpath:mapper/*.xml" />
+    </bean>
+
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer" id="mapperScannerconfigurer">
+        <!-- <property name="sqlSessionFactoryBeanName" value="sqlSessionFactoryBean"></property> -->
+        <property name="basePackage" value="tao.mapper"></property>
+    </bean>
+
+    <!-- 事务配置 -->
+    <bean class="org.springframework.jdbc.datasource.DataSourceTransactionManager" id="transactionManager">
+        <property name="dataSource" ref="dataSource"></property>
+    </bean>
+    <tx:advice id="txAdvice" transaction-manager="transactionManager">
+        <!-- 设置事务的属性信息 -->
+        <tx:attributes>
+            <!-- 所有方法使用默认配置属性（如隔离级别、失效时间） -->
+            <tx:method name="add*" />
+            <tx:method name="update*" />
+            <tx:method name="delete*" />
+            <tx:method name="insert*" />
+        </tx:attributes>
+    </tx:advice>
+
+    <aop:config>
+        <aop:pointcut id="points" expression="execution(* tao.service.*.*(..))" />
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="points" />
+    </aop:config>
+</beans>

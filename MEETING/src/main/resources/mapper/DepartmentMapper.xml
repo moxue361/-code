@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper  namespace="tao.mapper.DepartmentMapper" >
+    <select id="findAll" resultType="tao.model.Department">
+        select * from department;
+    </select>
+
+    <insert id="addDep">
+        insert into department(departmentname) values(#{departmentname})
+    </insert>
+    
+    <select id="findOneByDepName" resultType="tao.model.Department">
+        select * from department where departmentname=#{Depname}
+    </select>
+
+    <delete id="delDep">
+        delete from department where departmentid=#{departnameid}
+    </delete>
+
+    <update id="updateDep">
+        update department set departmentname=#{departmentname} where departmentid=#{departmentid}
+    </update>
+    
+</mapper>
