@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper  namespace="tao.dao.IOrderDao" >
+
+    <resultMap id="orderMap" type="tao.bean.Order">
+        <result column="oid" property="id"/>
+        <result column="ordertime" property="ordertime"/>
+        <result column="total" property="total"/>
+        <result column="uid" property="user.id"/>
+        <result column="username" property="user.username"/>
+        <result column="birthday" property="user.birthday"/>
+        <result column="sex" property="user.sex"/>
+        <result column="address" property="user.address"/>
+    </resultMap>
+    <select id="findAll" resultMap="orderMap">
+        select *,orders.id oid from orders,user where user.id=orders.uid
+    </select>
+</mapper>

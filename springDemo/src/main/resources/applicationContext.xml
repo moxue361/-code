@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation= "http://www.springframework.org/schema/beans
+                            http://www.springframework.org/schema/beans/spring-beans.xsd
+                            http://www.springframework.org/schema/aop
+                            http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+       <bean id="userDao" class="dao.UserDao"></bean>
+
+       <!-- 依赖注入 -->
+       <bean id="userService" class="service.UserService" scope="prototype">
+              <property name="strList">
+                     <list>
+                            <value>aaa</value>
+                            <value>bbb</value>
+                            <value>ccc</value>
+                     </list>       
+              </property>
+              <property name="userDaoMap">
+                     <map>
+                            <entry key="dao1" value-ref="userDao"></entry>
+                            <entry key="dao2" value-ref="userDao"></entry>
+                     </map>
+              </property>
+              <property name="properties">
+                     <props>
+                            <prop key="key1">value1</prop>
+                            <prop key="key2">value2</prop>
+                            <prop key="key3">value3</prop>
+                     </props>
+              </property>
+
+              <property name="userDao" ref="userDao"></property>
+       </bean>
+
+
+       <!-- aopDemo -->
+
+       <!-- 增强目标对象 -->
+       <bean id="target" class="aopDemo.Target"></bean>
+       <!-- 切面类 -->
+       <bean id="advice" class="aopDemo.Advice"></bean>
+       <aop:config>
+              <aop:aspect ref="advice">
+                     <aop:before method="before" pointcut="execution(public void aopDemo.Target.hello(String))"/>
+              </aop:aspect>
+       </aop:config>
+</beans>
